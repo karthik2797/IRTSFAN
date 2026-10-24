@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>IRTSFAN – MSTS Indian Railways</title>
+<style>
+:root{--bg:#f3efe6;--bg2:#e9e3d4;--surf:#fffdf8;--text:#161b2e;--muted:#5b6279;--line:#d8d0bd;--accent:#e8760a;--accent2:#0f4cc0;--green:#12924a;--red:#d8352a;--board:#10151f;--boardtxt:#ffc247;--hero:#0a1226;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#070b16;--bg2:#0c1222;--surf:#111a30;--text:#eaf0ff;--muted:#93a0c4;--line:#222f52;--accent:#ff9b2f;--accent2:#6aa2ff;--board:#05080f}}
+:root[data-theme="dark"]{--bg:#070b16;--bg2:#0c1222;--surf:#111a30;--text:#eaf0ff;--muted:#93a0c4;--line:#222f52;--accent:#ff9b2f;--accent2:#6aa2ff;--board:#05080f}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:74px}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 "Bahnschrift","Segoe UI Variable","Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;overflow-x:hidden}
+a{color:var(--accent2)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+.mono{font-family:ui-monospace,"Cascadia Mono","SF Mono",Consolas,monospace}
+/* nav */
+header{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--hero) 88%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.1)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--hero);pointer-events:none}
+nav{max-width:1080px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:18px}
+.logo{color:#fff;text-decoration:none;font-weight:800;letter-spacing:.14em;font-size:1.15rem;display:flex;align-items:center;gap:9px}
+.logo b{color:var(--accent)}
+.dot{width:12px;height:12px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green);animation:pulse 2s infinite}
+@keyframes pulse{50%{opacity:.35}}
+nav ul{display:flex;gap:18px;list-style:none;margin:0 0 0 auto;padding:0}
+nav ul a{color:#c9d4f5;text-decoration:none;font-size:.9rem;font-weight:600}
+nav ul a:hover{color:var(--accent)}
+#clock{color:var(--boardtxt);font-size:.82rem;border:1px solid rgba(255,194,71,.35);padding:3px 9px;border-radius:6px;white-space:nowrap}
+#theme{background:none;border:1px solid rgba(255,255,255,.25);color:#fff;border-radius:99px;width:34px;height:34px;cursor:pointer;font-size:1rem}
+@media(max-width:760px){nav ul{display:none}#clock{margin-left:auto}}
+/* hero */
+.hero{position:relative;background:var(--hero);height:min(88vh,640px);min-height:480px;overflow:hidden;color:#fff}
+#cv{position:absolute;inset:0;width:100%;height:100%;display:block}
+.heroin{position:relative;z-index:2;padding-top:clamp(40px,9vh,90px);pointer-events:none}
+.kick{display:inline-block;font-size:.76rem;letter-spacing:.2em;color:var(--accent);border:1px solid var(--accent);padding:4px 12px;border-radius:99px;font-weight:700}
+h1{font-size:clamp(3rem,11vw,7.2rem);line-height:.95;margin:16px 0 14px;letter-spacing:.04em;font-weight:900}
+h1 span{background:linear-gradient(90deg,#ff9b2f,#ffd27a);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{max-width:540px;color:#cdd8f7;font-size:1.1rem;margin:0 0 22px}
+.cta{pointer-events:auto;display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-block;padding:12px 22px;border-radius:10px;font-weight:700;text-decoration:none;border:2px solid var(--accent);color:#fff;transition:transform .15s,background .15s}
+.btn:hover{transform:translateY(-2px)}
+.btn.p{background:var(--accent);color:#1b1000}
+.gauge{position:absolute;right:20px;bottom:18px;z-index:3;text-align:right;color:#cdd8f7;font-size:.8rem;pointer-events:none}
+.gauge strong{display:block;font-size:2rem;color:var(--boardtxt);line-height:1}
+.hint{position:absolute;left:20px;bottom:18px;z-index:3;font-size:.76rem;color:#8fa0cf;pointer-events:none}
+.tri{height:7px;background:linear-gradient(90deg,#ff9933 33.3%,#fff 33.3% 66.6%,#138808 66.6%)}
+/* sections */
+section{padding:64px 0}
+.eyebrow{font-size:.78rem;letter-spacing:.2em;color:var(--accent);font-weight:700}
+h2{font-size:clamp(1.7rem,4vw,2.5rem);margin:6px 0 8px;line-height:1.15}
+.sub{color:var(--muted);max-width:640px;margin:0 0 26px}
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s,transform .7s}
+.reveal.in{opacity:1;transform:none}
+/* board */
+.board{background:var(--board);border-radius:14px;border:1px solid #2a3350;overflow:hidden;box-shadow:0 14px 40px rgba(0,0,0,.25)}
+.bh,.row{display:grid;grid-template-columns:70px 1fr 110px;gap:10px;padding:12px 18px;align-items:center}
+.bh{background:#1b2540;color:#9fb0e0;font-size:.72rem;letter-spacing:.16em}
+.row{width:100%;background:none;border:0;border-top:1px solid #1d2744;color:var(--boardtxt);text-align:left;cursor:pointer;font-size:1rem;letter-spacing:.08em;text-transform:uppercase}
+.row:hover,.row.on{background:#17213a}
+.row .st{font-size:.76rem;color:#53e089}
+.row.on .st::before{content:"● ";animation:pulse 1s infinite}
+@media(max-width:560px){.bh,.row{grid-template-columns:44px 1fr 80px;padding:11px 12px;font-size:.88rem}}
+/* tools */
+.bar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:26px 0 18px}
+#q{flex:1;min-width:200px;padding:12px 16px;border-radius:10px;border:1px solid var(--line);background:var(--surf);color:var(--text);font:inherit}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{padding:8px 14px;border-radius:99px;border:1px solid var(--line);background:var(--surf);color:var(--text);cursor:pointer;font:inherit;font-size:.85rem;font-weight:600}
+.chip.on{background:var(--accent);border-color:var(--accent);color:#1b1000}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+.card{display:block;text-decoration:none;color:inherit;background:var(--surf);border:1px solid var(--line);border-radius:14px;padding:20px;position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s,border-color .2s}
+.card::after{content:"";position:absolute;left:0;top:0;height:4px;width:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.card:hover{transform:translateY(-5px);box-shadow:0 14px 30px rgba(0,0,0,.18);border-color:var(--accent)}
+.card:hover::after{transform:scaleX(1)}
+.card .ic{font-size:2rem}
+.card h3{margin:8px 0 4px;font-size:1.1rem}
+.card p{margin:0 0 14px;color:var(--muted);font-size:.92rem}
+.card .go{color:var(--accent2);font-weight:700;font-size:.88rem}
+.tag{font-size:.68rem;letter-spacing:.14em;color:var(--muted);float:right}
+.empty{display:none;color:var(--muted);padding:20px 0}
+/* journey */
+.jr{background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.line{position:relative;padding-left:44px;max-width:680px}
+.line::before{content:"";position:absolute;left:14px;top:6px;bottom:6px;width:4px;background:var(--line);border-radius:2px}
+.line i{position:absolute;left:14px;top:6px;width:4px;height:var(--p,0%);background:var(--accent);border-radius:2px;max-height:calc(100% - 12px)}
+.stop{position:relative;margin-bottom:26px}
+.stop::before{content:"";position:absolute;left:-39px;top:5px;width:14px;height:14px;border-radius:50%;background:var(--bg2);border:3px solid var(--line);transition:.4s}
+.stop.in::before{border-color:var(--accent);background:var(--accent)}
+.stop h3{margin:0 0 2px}
+.stop p{margin:0;color:var(--muted)}
+.soc{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.mail{display:inline-block;margin-top:6px}
+footer{background:var(--hero);color:#a9b6dc;padding:34px 0 46px;font-size:.88rem}
+footer a{color:var(--accent)}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}.dot{animation:none}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<header><nav>
+<a class="logo" href="#top"><span class="dot"></span>IRTS<b>FAN</b></a>
+<ul><li><a href="#board">Platforms</a></li><li><a href="#hub">Add-ons</a></li><li><a href="#journey">Start</a></li><li><a href="#community">Community</a></li></ul>
+<span id="clock" class="mono">-- IST</span>
+<button id="theme" aria-label="Toggle theme">◐</button>
+</nav></header>
+
+<div class="hero" id="top">
+<canvas id="cv"></canvas>
+<div class="wrap heroin">
+<span class="kick">MSTS · INDIAN RAILWAYS</span>
+<h1>IRTS<span>FAN</span></h1>
+<p class="lead">Rolling stock, routes and activities for Microsoft Train Simulator, built for fans of the Indian Railways.</p>
+<div class="cta"><a class="btn p" href="#hub">Explore add-ons</a><a class="btn" href="#journey">New to MSTS?</a></div>
+</div>
+<div class="hint mono">move pointer or scroll to change speed</div>
+<div class="gauge mono"><strong id="spd">0</strong>km/h</div>
+</div>
+<div class="tri"></div>
+
+<section id="board"><div class="wrap">
+<div class="reveal"><div class="eyebrow">DEPARTURES</div>
+<h2>Choose your platform</h2>
+<p class="sub">Tap a platform to filter the add-on hub below.</p></div>
+<div class="board reveal" id="bd">
+<div class="bh mono"><span>PLAT</span><span>SERVICE</span><span>STATUS</span></div>
+</div>
+</div></section>
+
+<section id="hub" style="padding-top:0"><div class="wrap">
+<div class="reveal"><div class="eyebrow">ADD-ON HUB</div>
+<h2>Find what you need</h2></div>
+<div class="bar reveal"><input id="q" type="search" placeholder="Search locos, routes, tools…" aria-label="Search"><div class="chips" id="chips"></div></div>
+<div class="grid" id="grid"></div>
+<p class="empty" id="empty">No matches. Try another word or category.</p>
+<p class="sub" style="margin-top:22px;font-size:.88rem">Use an ad blocker on download pages and scan every file with your own antivirus. Contact each asset’s creator for questions about their add-on.</p>
+</div></section>
+
+<section class="jr" id="journey"><div class="wrap">
+<div class="reveal"><div class="eyebrow">THE JOURNEY</div>
+<h2>From install to first run</h2>
+<p class="sub">Three stops to get rolling.</p></div>
+<div class="line" id="line"><i></i>
+<div class="stop"><h3>Stop 1 · Set up MSTS</h3><p>Install the simulator and base files. The video guide walks through it.</p></div>
+<div class="stop"><h3>Stop 2 · Add Indian Railways content</h3><p>Download routes and rolling stock, then extract them into your MSTS folder.</p></div>
+<div class="stop"><h3>Stop 3 · Pick an activity and go</h3><p>Load a route, choose a service and start your run.</p></div>
+</div>
+</div></section>
+
+<section id="community"><div class="wrap">
+<div class="reveal"><div class="eyebrow">COMMUNITY</div>
+<h2>Ride along with us</h2>
+<p class="sub">Videos, discussion and updates from the IRTS FAN community.</p></div>
+<div class="soc reveal">
+<a class="card" href="https://www.youtube.com/c/IRTSFAN" target="_blank" rel="noopener"><div class="ic">▶️</div><h3>YouTube</h3><p>Walkthroughs and tutorials.</p><span class="go">Watch →</span></a>
+<a class="card" href="https://www.facebook.com/groups/irtsfan" target="_blank" rel="noopener"><div class="ic">👥</div><h3>Facebook Group</h3><p>Talk MSTS with fellow fans.</p><span class="go">Join →</span></a>
+<a class="card" href="https://www.facebook.com/IRTSFAN/" target="_blank" rel="noopener"><div class="ic">📣</div><h3>Facebook Page</h3><p>News and announcements.</p><span class="go">Follow →</span></a>
+</div>
+<p class="reveal" style="margin-top:26px">Questions or ideas? <a class="mail" href="mailto:irtslover@gmail.com">irtslover@gmail.com</a></p>
+</div></section>
+
+<footer><div class="wrap">© <span id="y">2026</span> IRTSFAN. A fan project, not affiliated with Indian Railways or Microsoft. Microsoft Train Simulator is a trademark of Microsoft.</div></footer>
+
+<script>
+(function(){
+var D=[
+["stock","🚆","Rolling Stock","Locomotives, coaches and EMUs in IR liveries.","https://sites.google.com/view/msts-ir-newbie/trainsets-exe"],
+["routes","🛤️","Route Collection","Indian Railways routes for MSTS.","https://sites.google.com/view/msts-ir-newbie/copy-of-route-collection"],
+["routes","🗺️","SR v2 & v3","Southern Railway Version 2 and 3 routes.","https://sites.google.com/view/irts-fan-productions/home"],
+["acts","🎯","Activities","Ready-to-run services and scenarios.","https://sites.google.com/view/msts-ir-newbie/home"],
+["tools","🧰","Tools & Utilities","Editors and helpers for MSTS.","https://sites.google.com/view/msts-ir-newbie/tools-utilities"],
+["learn","🎬","Video Tutorials","Install and driving guides.","https://sites.google.com/view/msts-ir-newbie/video-tutorials"],
+["learn","💻","System Specifications","Reference PC setup for running MSTS.","https://sites.google.com/view/msts-ir-newbie/my-system-specifications"],
+["learn","🌱","Newbie Guide","Start here if MSTS is new to you.","https://sites.google.com/view/msts-ir-newbie/home"]
+];
+var C=[["all","All"],["stock","Rolling Stock"],["routes","Routes"],["acts","Activities"],["tools","Tools"],["learn","Learn"]];
+var cat="all",$=function(i){return document.getElementById(i)};
+var bd=$("bd");
+C.slice(1,5).concat([C[5]]).forEach(function(c,i){
+var b=document.createElement("button");b.className="row mono";b.dataset.c=c[0];
+b.innerHTML="<span>0"+(i+1)+"</span><span>"+c[1]+"</span><span class='st'>ON TIME</span>";
+b.onclick=function(){setCat(c[0]);$("hub").scrollIntoView({behavior:"smooth"})};
+bd.appendChild(b)});
+var ch=$("chips");
+C.forEach(function(c){var b=document.createElement("button");b.className="chip";b.textContent=c[1];b.dataset.c=c[0];b.onclick=function(){setCat(c[0])};ch.appendChild(b)});
+function setCat(c){cat=c;render()}
+function esc(s){return s.replace(/&/g,"&amp;")}
+function render(){
+var q=$("q").value.toLowerCase(),n=0,g=$("grid");g.innerHTML="";
+D.forEach(function(d){
+if((cat==="all"||d[0]===cat)&&(d[2]+" "+d[3]).toLowerCase().indexOf(q)>-1){n++;
+var a=document.createElement("a");a.className="card";a.href=d[4];a.target="_blank";a.rel="noopener";
+a.innerHTML="<span class='tag mono'>"+d[0].toUpperCase()+"</span><div class='ic'>"+d[1]+"</div><h3>"+esc(d[2])+"</h3><p>"+d[3]+"</p><span class='go'>Open →</span>";
+g.appendChild(a)}});
+$("empty").style.display=n?"none":"block";
+[].forEach.call(document.querySelectorAll(".chip"),function(e){e.classList.toggle("on",e.dataset.c===cat)});
+[].forEach.call(document.querySelectorAll(".row"),function(e){e.classList.toggle("on",e.dataset.c===cat)})}
+$("q").oninput=render;render();
+/* clock */
+function tick(){try{$("clock").textContent=new Date().toLocaleTimeString("en-GB",{timeZone:"Asia/Kolkata",hour12:false})+" IST"}catch(e){}}
+tick();setInterval(tick,1000);
+$("y").textContent=new Date().getFullYear();
+/* theme */
+$("theme").onclick=function(){var r=document.documentElement,dark=r.dataset.theme?r.dataset.theme==="dark":matchMedia("(prefers-color-scheme:dark)").matches;r.dataset.theme=dark?"light":"dark"};
+/* reveal */
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in")}})},{threshold:.15});
+[].forEach.call(document.querySelectorAll(".reveal,.stop"),function(e){io.observe(e)});
+function prog(){var l=$("line"),r=l.getBoundingClientRect(),p=(innerHeight*.6-r.top)/r.height;l.style.setProperty("--p",Math.max(0,Math.min(1,p))*100+"%")}
+/* canvas */
+var cv=$("cv"),x=cv.getContext("2d"),W,H,dpr,off=0,speed=0,target=60,sy=0,mx=.5,reduce=matchMedia("(prefers-reduced-motion:reduce)").matches,vis=true;
+var stars=[];for(var i=0;i<90;i++)stars.push([Math.random(),Math.random()*.55,Math.random()*1.4+.3,Math.random()*6]);
+function size(){dpr=Math.min(devicePixelRatio||1,2);W=cv.clientWidth;H=cv.clientHeight;cv.width=W*dpr;cv.height=H*dpr;x.setTransform(dpr,0,0,dpr,0,0)}
+size();addEventListener("resize",size);
+cv.parentNode.addEventListener("pointermove",function(e){var r=cv.getBoundingClientRect();mx=(e.clientX-r.left)/r.width;target=40+mx*200});
+addEventListener("scroll",function(){var d=Math.abs(scrollY-sy);sy=scrollY;target=Math.min(280,target+d*.6);prog()},{passive:true});
+new IntersectionObserver(function(e){vis=e[0].isIntersecting}).observe(cv);
+function hills(base,amp,f,par,col){x.fillStyle=col;x.beginPath();x.moveTo(0,H);for(var i=0;i<=W;i+=8){var u=(i+off*par)*f;x.lineTo(i,base-amp*(Math.sin(u)*.5+Math.sin(u*2.3+1)*.3+.5))}x.lineTo(W,H);x.fill()}
+function wag(px,py,w,h,col,stripe,loco){
+x.fillStyle=col;x.beginPath();
+if(loco){x.moveTo(px,py+h);x.lineTo(px,py+8);x.quadraticCurveTo(px,py,px+14,py);x.lineTo(px+w-4,py);x.lineTo(px+w,py+h*.45);x.lineTo(px+w,py+h)}
+else{x.roundRect?x.roundRect(px,py,w,h,5):x.rect(px,py,w,h)}
+x.fill();
+x.fillStyle=stripe;x.fillRect(px,py+h*.58,w,5);
+x.fillStyle=loco?"#bcd6ff":"rgba(120,160,230,.75)";
+for(var k=0;k<(loco?3:5);k++)x.fillRect(px+(loco?26:10)+k*(loco?22:19),py+9,loco?14:12,12);
+x.fillStyle="#1a1f2e";x.fillRect(px+4,py+h,w-8,5);
+}
+function frame(t){
+requestAnimationFrame(frame);if(!vis)return;
+if(!reduce){speed+=(target-speed)*.04;target+=(60+mx*120-target)*.01;off+=speed*.06}
+var gy=H*.78;
+var g=x.createLinearGradient(0,0,0,gy);g.addColorStop(0,"#050a1c");g.addColorStop(.6,"#14224b");g.addColorStop(1,"#c9632a");x.fillStyle=g;x.fillRect(0,0,W,H);
+stars.forEach(function(s){x.globalAlpha=.4+.6*Math.abs(Math.sin(t/900+s[3]));x.fillStyle="#fff";x.fillRect(s[0]*W,s[1]*H,s[2],s[2])});x.globalAlpha=1;
+x.fillStyle="#ffd9a0";x.beginPath();x.arc(W*.78,H*.3,26,0,7);x.fill();
+hills(gy-30,90,.004,.15,"#1b2a52");hills(gy-8,60,.007,.4,"#101c3c");
+x.fillStyle="#0a1226";x.fillRect(0,gy,W,H-gy);
+/* poles */
+var sp=220;x.strokeStyle="#2b3558";x.lineWidth=3;
+for(var i=-1;i<W/sp+2;i++){var px=((i*sp-off*1.6)%(sp*(Math.ceil(W/sp)+2)));px=(px+sp*(Math.ceil(W/sp)+2))%(sp*(Math.ceil(W/sp)+2))-sp;x.beginPath();x.moveTo(px,gy);x.lineTo(px,gy-90);x.moveTo(px-18,gy-82);x.lineTo(px+18,gy-82);x.stroke()}
+/* track */
+var ty=gy+34;
+x.fillStyle="#2a2118";var sl=34,so=(off*2.4)%sl;for(var i=-sl;i<W+sl;i+=sl)x.fillRect(i-so,ty+6,16,10);
+x.fillStyle="#98a0b4";x.fillRect(0,ty,W,3);x.fillRect(0,ty+9,W,3);
+/* train */
+var th=34,tw=96,n=Math.max(4,Math.ceil(W/100)),sx=W*.12+Math.sin(t/700)*speed*.01;
+var tx=W-tw-10-(speed/280)*40;
+x.save();
+var bob=Math.sin(t/60)*speed*.003;x.translate(0,bob);
+for(var i=0;i<6;i++)wag(tx-(i+1)*(tw-4)-4,ty-th-4,tw-8,th,"#dfe6f7","#f28c00",false);
+wag(tx,ty-th-4,tw+10,th,"#1558c9","#fff",true);
+var bg=x.createRadialGradient(tx+tw+12,ty-26,2,tx+tw+110,ty-22,120);bg.addColorStop(0,"rgba(255,235,170,.55)");bg.addColorStop(1,"rgba(255,235,170,0)");x.fillStyle=bg;x.beginPath();x.moveTo(tx+tw+10,ty-30);x.lineTo(tx+tw+260,ty-80);x.lineTo(tx+tw+260,ty+10);x.fill();
+x.restore();
+$("spd").textContent=Math.round(speed*.5);
+}
+requestAnimationFrame(frame);prog();
+})();
+</script>
+</body>
+</html>
